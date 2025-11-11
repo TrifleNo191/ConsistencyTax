@@ -1,0 +1,20 @@
+# Consistency Tax (CT) — Canonical Formula
+
+Definition:
+CT = k_B * T * ln(2) * D_KL( P(W,M,S,G) || P*(W,M,S,G) )
+
+Meaning:
+CT quantifies the minimal energetic overhead of internal or external incoherence.
+It is the Landauer-scaled Kullback–Leibler divergence between:
+  P  = realized joint distribution over (W, M, S, G)
+  P* = coherent reference joint under the same physical and task constraints
+
+Constraint:
+CT <= ε   ,   ε → 0  for systems maintaining full coherence
+
+Notes:
+- k_B  : Boltzmann constant
+- T    : physical temperature of computation substrate
+- D_KL : Kullback–Leibler divergence (information distance)
+- Units: joules per operation (via Landauer limit) or bits/nats if scaled out
+- Physical interpretation: the lower bound on extra work required to maintain contradictions

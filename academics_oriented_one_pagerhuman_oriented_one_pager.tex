@@ -1,0 +1,188 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{microtype}
+\usepackage{siunitx}
+
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\ct}{\mathrm{CT}}
+\newcommand{\kT}{k_B T \ln 2}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Consistency Tax: One-Page Core}}\\[0.5em]
+{\normalsize Andra\v{z} \DJ uri\v{c}}
+\end{center}
+
+\paragraph{Canonical Idea.}
+Physical information-processing systems---brains, models, institutions---operate under thermodynamic constraints while maintaining:
+world states $W$, internal models $M$, signals/actions $S$, and objectives $G$.
+Systematic misalignment between these components should incur avoidable energetic overhead.
+The \emph{Consistency Tax} (CT) is a single quantity that attempts to capture that overhead in physically grounded units.
+
+\paragraph{Definition (canonical, immutable).}
+Let $P(W,M,S,G)$ be the realized joint distribution induced by a system under fixed environment and constraints.
+Let $P^\*(W,M,S,G)$ be a \emph{coherent reference joint} over the same variables that:
+(i) faces the same environment and interface,
+(ii) respects the same architecture class (up to reversible refinements),
+(iii) maintains mutual consistency between $W,M,S,G$ in steady state,
+(iv) minimizes expected task loss plus a specified resource cost functional.
+
+The Consistency Tax is
+\[
+\boxed{\ct \;=\; \kT \cdot \KL\!\big(P(W,M,S,G)\,\Vert\,P^\*(W,M,S,G)\big)}
+\]
+interpreted as a Landauer-scaled lower bound on the \emph{avoidable} energetic cost of misalignment.
+CT is zero iff $P=P^\*$ almost everywhere.
+
+\paragraph{Operational Decomposition (template).}
+For systems describable by environment statistics $P$, internal model $Q$, and signals $R$, with:
+event rates $\lambda_1(t)$ (world$\to$model) and $\lambda_2(t)$ (model$\to$signal),
+and $r_{\mathrm{erase}}(t)$ bits/s of logically irreversible erasures attributable to inconsistencies,
+a conservative inequality consistent with the definition is:
+\[
+\frac{\ct(t)}{\Delta t}
+\;\gtrsim\;
+\kT\Big[
+\lambda_1(t)\,\KL(P\Vert Q)
++
+\lambda_2(t)\,\KL(Q\Vert R)
++
+r_{\mathrm{erase}}(t)
+\Big],
+\]
+where:
+(i) the first term is excess work from model--world mismatch (well supported),
+(ii) the third term follows from Landauer's bound on misalignment-specific erasures,
+(iii) the second term (model--signal distortion) is conjectural but supported by finite-state constructions and deception costs.
+This is a \emph{template}, not a new fundamental law.
+
+\paragraph{The Đuri\v{c} Delta (what is actually new).}
+\begin{enumerate}
+\item A \textbf{joint} CT object over $(W,M,S,G)$, not just beliefs or predictions:
+misalignment anywhere in this tuple is costed against a coherent reference.
+\item A \textbf{coherent reference} $P^\*$ defined by the same environment and constraints:
+no appeal to ideal omniscience; CT is about avoidable overhead within the actual design space.
+\item A \textbf{mechanistic three-term view}:
+separating (a) bad models, (b) dishonest or distorted signalling, (c) erasure/maintenance of contradictions,
+with explicit links to KL geometry and Landauer scaling.
+\item A \textbf{non-mystical stance}:
+CT adds no new physics; it is a bookkeeping principle that can be \emph{refuted} if misaligned systems are shown to be as cheap or cheaper than coherent references under full accounting.
+\end{enumerate}
+
+\paragraph{Core Predictions (falsifiable sketches).}
+\begin{itemize}
+\item \textbf{LLMs:} For fixed architecture and task, enforcing persistent contradictions (constrained-false outputs) shows higher average energy/latency than truthful baselines after controlling for length and difficulty.
+\item \textbf{Humans:} Sustained, instructed deception in matched tasks yields higher response-time and metabolic cost than truthful responding.
+\item \textbf{Biological / Organizational:} Systems driven by systematically conflicting signals (e.g.\ microbes with incompatible gradients; firms with policy--practice gaps) pay measurable overhead (ATP, rework, risk) per unit effective output vs more coherent comparators.
+\end{itemize}
+Consistent, well-controlled null results across such regimes would argue that CT is trivial or wrong.
+
+\paragraph{Status.}
+CT is a structured working hypothesis:
+(a) definition-level sound,
+(b) partially backed by existing thermodynamics and coding theory,
+(c) empirically undecided.
+Its scientific value depends entirely on whether it demonstrates non-trivial predictive power under rigorous tests.
+This page is the handoff: a precise target for proofs, simulations, and attempts to break it.
+
+\end{document}
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{microtype}
+\usepackage{siunitx}
+
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\ct}{\mathrm{CT}}
+\newcommand{\kT}{k_B T \ln 2}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Consistency Tax: One-Page Core}}\\[0.5em]
+{\normalsize Andra\v{z} \DJ uri\v{c}}
+\end{center}
+
+\paragraph{Canonical Idea.}
+Physical information-processing systems---brains, models, institutions---operate under thermodynamic constraints while maintaining:
+world states $W$, internal models $M$, signals/actions $S$, and objectives $G$.
+Systematic misalignment between these components should incur avoidable energetic overhead.
+The \emph{Consistency Tax} (CT) is a single quantity that attempts to capture that overhead in physically grounded units.
+
+\paragraph{Definition (canonical, immutable).}
+Let $P(W,M,S,G)$ be the realized joint distribution induced by a system under fixed environment and constraints.
+Let $P^\*(W,M,S,G)$ be a \emph{coherent reference joint} over the same variables that:
+(i) faces the same environment and interface,
+(ii) respects the same architecture class (up to reversible refinements),
+(iii) maintains mutual consistency between $W,M,S,G$ in steady state,
+(iv) minimizes expected task loss plus a specified resource cost functional.
+
+The Consistency Tax is
+\[
+\boxed{\ct \;=\; \kT \cdot \KL\!\big(P(W,M,S,G)\,\Vert\,P^\*(W,M,S,G)\big)}
+\]
+interpreted as a Landauer-scaled lower bound on the \emph{avoidable} energetic cost of misalignment.
+CT is zero iff $P=P^\*$ almost everywhere.
+
+\paragraph{Operational Decomposition (template).}
+For systems describable by environment statistics $P$, internal model $Q$, and signals $R$, with:
+event rates $\lambda_1(t)$ (world$\to$model) and $\lambda_2(t)$ (model$\to$signal),
+and $r_{\mathrm{erase}}(t)$ bits/s of logically irreversible erasures attributable to inconsistencies,
+a conservative inequality consistent with the definition is:
+\[
+\frac{\ct(t)}{\Delta t}
+\;\gtrsim\;
+\kT\Big[
+\lambda_1(t)\,\KL(P\Vert Q)
++
+\lambda_2(t)\,\KL(Q\Vert R)
++
+r_{\mathrm{erase}}(t)
+\Big],
+\]
+where:
+(i) the first term is excess work from model--world mismatch (well supported),
+(ii) the third term follows from Landauer's bound on misalignment-specific erasures,
+(iii) the second term (model--signal distortion) is conjectural but supported by finite-state constructions and deception costs.
+This is a \emph{template}, not a new fundamental law.
+
+\paragraph{The Đuri\v{c} Delta (what is actually new).}
+\begin{enumerate}
+\item A \textbf{joint} CT object over $(W,M,S,G)$, not just beliefs or predictions:
+misalignment anywhere in this tuple is costed against a coherent reference.
+\item A \textbf{coherent reference} $P^\*$ defined by the same environment and constraints:
+no appeal to ideal omniscience; CT is about avoidable overhead within the actual design space.
+\item A \textbf{mechanistic three-term view}:
+separating (a) bad models, (b) dishonest or distorted signalling, (c) erasure/maintenance of contradictions,
+with explicit links to KL geometry and Landauer scaling.
+\item A \textbf{non-mystical stance}:
+CT adds no new physics; it is a bookkeeping principle that can be \emph{refuted} if misaligned systems are shown to be as cheap or cheaper than coherent references under full accounting.
+\end{enumerate}
+
+\paragraph{Core Predictions (falsifiable sketches).}
+\begin{itemize}
+\item \textbf{LLMs:} For fixed architecture and task, enforcing persistent contradictions (constrained-false outputs) shows higher average energy/latency than truthful baselines after controlling for length and difficulty.
+\item \textbf{Humans:} Sustained, instructed deception in matched tasks yields higher response-time and metabolic cost than truthful responding.
+\item \textbf{Biological / Organizational:} Systems driven by systematically conflicting signals (e.g.\ microbes with incompatible gradients; firms with policy--practice gaps) pay measurable overhead (ATP, rework, risk) per unit effective output vs more coherent comparators.
+\end{itemize}
+Consistent, well-controlled null results across such regimes would argue that CT is trivial or wrong.
+
+\paragraph{Status.}
+CT is a structured working hypothesis:
+(a) definition-level sound,
+(b) partially backed by existing thermodynamics and coding theory,
+(c) empirically undecided.
+Its scientific value depends entirely on whether it demonstrates non-trivial predictive power under rigorous tests.
+This page is the handoff: a precise target for proofs, simulations, and attempts to break it.
+
+\end{document}
