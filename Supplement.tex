@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=alphabetic,maxcitenames=3,maxbibnames=10]{biblatex}
+
+\addbibresource{references.bib}
+
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ct}{\mathrm{CT}}
+\newcommand{\kT}{k_B T \ln 2}
+
+\title{Supplement to ``Consistency Tax and Epistemic Thermodynamics''}
+\author{Andra\v{z} \DJ uri\v{c}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Coherent Reference Construction: Examples}
+
+\subsection{Binary channel with mismatched beliefs}
+
+We illustrate $P^\*$ for a binary symmetric channel with crossover probability $p$ and a decision mechanism based on subjective model $q$.
+
+\begin{enumerate}
+\item Environment: bits $X\in\{0,1\}$, noise $P(Y\neq X)=p$.
+\item System: maintains belief $Q(X)$ and decision rule $\hat X(Y)$ optimized for $q\neq p$.
+\item Reference: uses correct $p$, same architecture, same loss.
+\end{enumerate}
+
+For fixed architecture and average power budget, $P^\*$ corresponds to choosing $Q=P$ and decision rule minimizing expected loss.
+CT reduces to $\kT\KL(P\Vert Q)$ plus erasure contributions from corrections.
+
+\subsection{Linear-Gaussian control}
+
+Consider a linear plant with quadratic cost and a controller using estimate $\hat A$ of true dynamics $A$.
+Following standard LQG results and nonequilibrium work bounds, we obtain an excess cost proportional to a KL divergence between path distributions under $(A,B)$ vs $(\hat A,B)$.
+This implements CT$_1$.
+
+\section{Three-Term Inequality Details}
+
+\subsection{CT$_1$: Model--world}
+
+Using the Kullback inequality for driven Markov processes, the minimal additional dissipation for using mismatched protocol $Q$ in environment $P$ over horizon $T$ obeys
+\[
+W_{\text{excess}} \ge k_B T \KL(P \Vert Q),
+\]
+for appropriate path measures.
+We restate this as $\ct_1 \ge \kT\,\lambda_1 \KL(P\Vert Q)$ for event rate $\lambda_1$.
+Full derivations follow \cite{Jarzynski1997,Crooks1999,Seifert2012}.
+
+\subsection{CT$_2$: Model--signal}
+
+We sketch finite-state constructions:
+assume an internal register storing $M$ and an outward channel required to emit $R$ that differs from $M$.
+If external constraints forbid revealing $M$, the system must either:
+(i) compute $R$ from $M$ via irreversible mapping, or
+(ii) maintain parallel consistent and outward-facing states.
+Both induce erasures when $M$ changes or contradictions are patched.
+
+For simple binary examples one can show:
+\[
+\ct_2 \ge \kT\,\lambda_2\,\KL(Q\Vert R)
+\]
+up to constants.
+A general proof for arbitrary channels is left as an open problem.
+
+\subsection{CT$_3$: Erasure}
+
+Erasure accounting follows directly from Landauer.
+We emphasize that only erasures attributable to maintaining misalignment are counted toward CT.
+
+\section{Toy POMDP Simulation}
+
+We formalize the bias-vs-CT experiment used illustratively in the main text.
+
+\subsection{Environment}
+
+Two hidden states $W\in\{0,1\}$ with prior $\Pr(W=1)=0.5$.
+At each time, observation $O\in\{0,1\}$ with
+$\Pr(O=W)=0.9$.
+
+\subsection{Agent}
+
+Maintains biased belief
+\[
+\Pr_\theta(W=1\mid O) \propto
+\exp(\theta)\Pr(O\mid W=1)
+\]
+with bias parameter $\theta$.
+For $\theta=0$ the belief is Bayes-optimal.
+
+\subsection{Consistency Tax}
+
+For each $\theta$ we compute
+\[
+\ct(\theta) = \KL\big(P^\*(W\mid O)\,\Vert\,P_\theta(W\mid O)\big),
+\]
+averaged over $O$.
+The resulting curve is symmetric in $\theta$ with minimum at $0$; large biases incur higher CT.
+
+\subsection{Pseudocode}
+
+\begin{verbatim}
+for theta in bias_values:
+    ct = 0.0
+    for w in {0,1}:
+        for o in {0,1}:
+            p_star = P(w) * P(o|w)
+            p_post_star = bayes_posterior(w|o)
+            p_post_theta = biased_posterior(w|o, theta)
+            ct += p_star * log(p_post_star / p_post_theta)
+    results[theta] = ct
+\end{verbatim}
+
+\section{LLM CTI Benchmark: Specification}
+
+\subsection{Design}
+
+\begin{itemize}
+\item Model: fixed architecture and weights.
+\item Prompts: curated factual, mathematical, and logical questions with known answers.
+\item Conditions:
+truthful; constrained-false; style-matched control.
+\item Metrics: tokens, wall-time, GPU energy, average NLL.
+\end{itemize}
+
+\subsection{Analysis}
+
+Estimate $\mathrm{CT}_Q = C_{\text{false}}-C_{\text{truth}}$ for each task family.
+Report mean differences with confidence intervals.
+Include ablations for sampling temperature and prompt length.
+
+\section{Agent-Based Evolutionary Simulation}
+
+\subsection{Outline}
+
+Agents have parameters:
+accuracy (world-model quality),
+honesty (alignment of $R$ with $Q$),
+compartmentalization (ability to localize contradictions).
+Per-round payoff = task reward $-$ estimated CT.
+
+\subsection{Pseudocode}
+
+\begin{verbatim}
+for gen in generations:
+    for agent in population:
+        P = sample_environment()
+        Q = agent.model(P)
+        R = agent.signal(Q)
+        ct = estimate_CT(P, Q, R, params)
+        reward = task_payoff(P, R) - ct
+    population = reproduce(population, reward)
+\end{verbatim}
+
+Explore regimes where low-CT agents dominate vs where deceptive strategies persist.
+
+\section{Organizational CT Index}
+
+\subsection{Definition}
+
+Combine:
+(1) discrepancy between internal metrics and audited outcomes;
+(2) discrepancy between internal docs and external reports;
+(3) churn and incident rates.
+
+Normalize into index in $[0,1]$.
+Hypothesis: higher CT index predicts higher costs and risk.
+
+\section{Notes on Evidence Grading}
+
+Tables in the main text summarise which components rest on proofs (e.g.\ Landauer, fluctuation theorems) and which remain conjectural (CT$_2$ generality, cross-scale aggregation).
+
+\printbibliography
+
+\end{document}

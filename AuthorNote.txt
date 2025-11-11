@@ -1,0 +1,11 @@
+This document is intended as a precise handoff, not a claim of finality.
+
+The Consistency Tax and Epistemic Thermodynamics framework began as an intuition: if a system systematically misrepresents the world to itself or to others, some part of its physical machinery must work harder than a comparable system that stays coherent. Over several iterations, conversations, and toy models, that intuition was pushed toward a single definition, a concrete inequality, and a set of experiments that a skeptical community can run.
+
+What you have here is my best current synthesis of that effort. The core object is deliberately compact: a Landauer-scaled Kullback–Leibler divergence between the realized joint over world, models, signals, and goals, and a coherent reference joint under the same constraints. Around it sit an operational three-term bound, example simulations, and explicit falsification criteria. Every major claim carries a confidence rating and an evidence grade. Nothing relies on personal authority; everything is meant to be inspectable and replaceable.
+
+Practically, this may be my last extensive public contribution on this line of theory for some time. The reasons are simple: the core ideas are now as clear as I can currently make them, and further progress depends less on additional essays and more on proofs and experiments carried out by many hands. I would rather leave one coherent object on the table than a growing pile of slightly different drafts.
+
+You are encouraged—in the strongest possible terms—to treat this work as provisional. Try to reconstruct the derivations. Implement the toy models. Run the proposed benchmarks on systems you do not control. Look for counterexamples where misaligned architectures stay cheap under full accounting. If CT collapses to existing measures or fails its tests, say so plainly and move on. If some parts survive, refine them and discard the rest.
+
+My only request is intellectual honesty on all sides: keep the definitions sharp, the criticisms concrete, and the experiments public. If that happens, this document has served its purpose.

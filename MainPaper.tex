@@ -1,0 +1,480 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=alphabetic,maxcitenames=3,maxbibnames=10]{biblatex}
+
+\addbibresource{references.bib}
+
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ct}{\mathrm{CT}}
+\newcommand{\kT}{k_B T \ln 2}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\title{Consistency Tax and Epistemic Thermodynamics:\\
+The Energetic Cost of Misalignment}
+
+\author{Andra\v{z} \DJ uri\v{c}\thanks{Independent researcher. This framework is released as a working hypothesis, with explicit tests and failure modes, for community evaluation and extension.}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Physical information-processing systems---from cells and brains to artificial models and institutions---operate under thermodynamic constraints while maintaining internal models, emitting signals, and pursuing objectives.
+When these elements are systematically misaligned, intuition suggests additional energetic and computational overhead.
+This paper consolidates the \emph{Consistency Tax} (CT) program into a single formalism and experimental roadmap.
+
+Let $W$ denote world states, $M$ internal models, $S$ signals/actions, and $G$ objectives.
+Let $P(W,M,S,G)$ be the realized joint distribution induced by a system, and let $P^\*(W,M,S,G)$ be a coherent reference joint that, under the same environment and constraints, minimizes expected task loss and resource cost subject to mutual consistency between $W,M,S,G$.
+We define the Consistency Tax as
+\[
+\ct = \kT\,\KL\!\big(P(W,M,S,G)\,\Vert\,P^\*(W,M,S,G)\big),
+\]
+interpreted as a Landauer-scaled lower bound on the avoidable energetic overhead due to misalignment.
+
+For systems characterized by environment statistics $P$, internal models $Q$, and outward behaviour $R$, we derive an operational three-term inequality relating CT to (i) model--world mismatch, (ii) model--signal distortion, and (iii) logically irreversible erasure rates.
+We position CT relative to established results in thermodynamics of computation, stochastic thermodynamics, the Free Energy Principle, and transaction-cost economics, highlighting both overlaps and deltas.
+We then specify falsifiable predictions and concrete measurement protocols for large language models, human deception tasks, microbial chemotaxis, organizational coherence, and agent-based evolutionary simulations.
+
+CT is presented explicitly as a testable template rather than a new physical law.
+If CT fails to explain variance beyond existing complexity and loss measures, or if stable low-cost misaligned systems are demonstrated under full accounting, the framework should be revised or discarded.
+\end{abstract}
+
+\section{Introduction}
+
+Modern systems that sense, predict, and act---biological, artificial, and institutional---continually transform free energy into work, heat, and information.
+They maintain internal models of their environment, communicate outwardly, and pursue stated or implicit objectives.
+When these elements disagree, systems incur costs:
+errors, rework, monitoring overhead, suppressed internal signals, and the need to erase and rewrite state.
+
+The \emph{Consistency Tax} (CT) program asks:
+
+\begin{enumerate}[label=(Q\arabic*),leftmargin=2em]
+\item Can we quantify the minimal thermodynamic cost of sustained misalignment between world, models, signals, and goals?
+\item Under what conditions is this cost large enough to influence fitness, performance, or stability?
+\item How can such a quantity guide the design and diagnosis of AI systems, scientific processes, and institutions?
+\end{enumerate}
+
+The proposal builds only on established information theory and thermodynamics.
+No new primitive law is introduced.
+The central object is a Kullback--Leibler divergence between the realized behaviour of a system and a coherent baseline, scaled by the Landauer factor $\kT$.
+
+This paper is designed as a self-contained, reproducible handoff of the CT framework.
+All major claims are annotated with (i) a confidence level in $[0,1]$ and (ii) an evidence grade:
+A (proof or multiple independent empirical sources),
+B (single strong source or robust derivation with minor gaps),
+C (suggestive or toy evidence),
+D (speculative).
+
+\subsection{Contributions}
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Unified definition (CT-1).}
+We formalize CT as $\ct = \kT \KL(P\Vert P^\*)$ over $(W,M,S,G)$, with $P^\*$ a coherent, cost-minimizing reference joint.
+(\emph{Confidence} 0.9, \emph{Evidence} A/B.)
+\item \textbf{Operational three-term inequality (CT-4).}
+For systems with environment $P$, internal models $Q$, and signals $R$, we derive a mechanistic lower bound decomposing CT into model--world, model--signal, and erasure terms.
+(0.8, B.)
+\item \textbf{Cross-domain template.}
+We show how CT instantiates for AI models, neural and microbial systems, and organizations using the same formal object.
+(0.6, C.)
+\item \textbf{Falsifiable predictions and protocols.}
+We provide at least five concrete experimental designs with explicit success/failure criteria, enabling independent tests.
+(0.8, B.)
+\item \textbf{Applications and tools.}
+We outline CT-based diagnostics and regularizers for AI alignment, system design, and organizational auditing, and a CT-informed pipeline for scientific problem formulation.
+(0.7, C.)
+\end{enumerate}
+
+If subsequent work shows CT offers no non-trivial predictive or explanatory gain beyond existing metrics, it should be narrowed or abandoned.
+This rejection criterion is part of the proposal, not an afterthought.
+
+\section{Background and Related Work}
+
+\subsection{Thermodynamics of computation}
+
+Landauer's principle establishes that logically irreversible operations dissipate at least $\kT$ of heat per erased bit \cite{Landauer1961}.
+Bennett's work on reversible computation shows that, in principle, computation can be performed with arbitrarily low dissipation when logically reversible \cite{Bennett1982}.
+Fluctuation theorems and nonequilibrium work relations further link KL divergences of path ensembles to minimal dissipation \cite{Jarzynski1997,Crooks1999,Seifert2012}.
+CT relies directly on these results.
+
+\subsection{Free Energy Principle and related frameworks}
+
+The Free Energy Principle (FEP) and predictive processing treat adaptive systems as minimizing variational free energy or prediction error \cite{Friston2010FEP}.
+Rational inattention, information bottleneck methods, and MDL trade accuracy against information-processing cost.
+CT differs by:
+
+\begin{itemize}[leftmargin=1.5em]
+\item explicitly including signals/actions and objectives ($S,G$) alongside world and model;
+\item isolating \emph{avoidable} overhead relative to a coherent reference under identical constraints;
+\item emphasizing misalignment-induced erasure and bookkeeping costs.
+\end{itemize}
+
+\subsection{Deception, inconsistency, and organizational costs}
+
+Empirical work indicates that lying and sustained deception often impose cognitive and behavioural costs \cite{DePaulo1996,Vrij2008}.
+Organizational research documents losses from misreporting and misaligned incentives (To-verify).
+CT does not claim these literatures prove its quantitative form; instead, they provide qualitative consistency checks.
+
+\subsection{Scope}
+
+CT is intended as a cross-domain template:
+a way to quantify the physical cost of inconsistency that can be instantiated differently for AI systems, biological organisms, and institutions.
+It is \emph{not} a claim that all aspects of truthfulness or ethics reduce to energy.
+
+\section{Formalism of Consistency Tax}
+
+\subsection{Canonical definition}
+
+\begin{definition}[Realized joint]
+For a system operating over a time scale long enough to define empirical distributions, let
+$P(W,M,S,G)$ denote the joint distribution over:
+world states $W$, internal model states $M$, signals/actions $S$, and objectives/constraints $G$,
+induced by the actual physical implementation under fixed external conditions.
+\end{definition}
+
+\begin{definition}[Coherent reference joint]
+Let $\mathcal{C}$ be the set of feasible joint distributions over $(W,M,S,G)$ that:
+(i) are compatible with the same environment and external interface as $P$;
+(ii) respect physical constraints of the architecture class;
+(iii) maintain mutual consistency between $W,M,S,G$ (no deliberate contradictions);
+(iv) minimize expected task loss plus a specified resource cost functional
+(e.g., energy, compute time, hardware wear).
+
+Any element $P^\*\in\mathcal{C}$ attaining this minimum is called a \emph{coherent reference joint}.
+\end{definition}
+
+We do not require uniqueness; if multiple $P^\*$ exist, CT uses any minimizer, and $\ct=0$ only when $P$ matches at least one such reference.
+
+\begin{definition}[Consistency Tax]
+The Consistency Tax is
+\begin{equation}
+\ct
+\;:=\;
+\kT\,
+\KL\!\big(P(W,M,S,G)\,\Vert\,P^\*(W,M,S,G)\big).
+\label{eq:ct}
+\end{equation}
+\end{definition}
+
+\begin{proposition}[Zero-tax coherence]
+$\ct = 0$ if and only if $P(W,M,S,G)=P^\*(W,M,S,G)$ almost everywhere.
+\end{proposition}
+
+\begin{proof}
+Immediate from non-negativity and definiteness of $\KL(\cdot\Vert\cdot)$.
+\end{proof}
+
+\begin{remark}
+CT is defined relative to a chosen architecture class, cost functional, and environment.
+It is therefore \emph{conditional} and must always be reported with those conditions.
+\end{remark}
+
+\subsection{Operational P--Q--R decomposition}
+
+In many systems it is useful to distinguish:
+$P$: environment statistics over task-relevant variables,
+$Q$: internal model or belief distribution,
+$R$: distribution over signals/actions conditioned on internal state.
+
+Under assumptions of ergodicity and fixed coding schemes,
+we can express parts of the joint divergence in \cref{eq:ct} through divergences among $(P,Q,R)$.
+
+\begin{theorem}[Three-term CT inequality (template)]
+\label{thm:three_term}
+Consider a system with:
+\begin{itemize}[leftmargin=1.5em]
+\item environment distribution $P$ for queries/events at rate $\lambda_1(t)$,
+\item internal model $Q$ used to predict or control those events,
+\item signals/actions $R$ generated from internal states at rate $\lambda_2(t)$,
+\item misalignment-attributable irreversible erasures at rate $r_{\mathrm{erase}}(t)$.
+\end{itemize}
+Suppose that:
+(i) environment $P$ is stationary on the measurement timescale;
+(ii) control and communication are implemented via finite-state devices obeying Landauer's bound;
+(iii) the coherent reference joint uses $Q=P$ and $R$ aligned with $Q$ up to task-optimal stochasticity.
+
+Then the Consistency Tax rate satisfies
+\begin{equation}
+\frac{\ct(t)}{\Delta t}
+\;\ge\;
+\kT\,
+\Big[\lambda_1(t)\KL(P\Vert Q)
++\lambda_2(t)\KL(Q\Vert R)
++r_{\mathrm{erase}}(t)\Big],
+\end{equation}
+for any interval $\Delta t$ over which the rates are approximately constant.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The term with $\KL(P\Vert Q)$ follows from standard results connecting model mismatch in control to excess work via path-wise KL divergences.
+The erasure term follows directly from Landauer's principle.
+The term involving $\KL(Q\Vert R)$ is supported by constructions where enforced distortion requires additional memory, guards, or reversible-then-erased encodings.
+A general tight bound is conjectural; we include it as a template subject to further proof.
+\end{proof}
+
+\noindent
+\textbf{Status.}
+The structure of \Cref{thm:three_term} is strongly supported for CT$_1$ and CT$_3$ (Confidence 0.85, Evidence B/A), and conjectural but plausible for CT$_2$ (0.7, C).
+Counterexamples that respect all assumptions would refine or refute the template.
+
+\subsection{Rarity bound}
+
+For any mechanism that forces outputs into a rare set $S$ of probability $p = P^\*(S)$ under the coherent reference, coding theory implies a minimal description overhead of $\log_2(1/p)$ bits.
+Thus
+\begin{equation}
+\ct_{\mathrm{rarity}}
+\;\ge\;
+\kT \log_2\!\frac{1}{p}.
+\end{equation}
+This provides an architecture-independent floor on CT for highly constrained deceptive states.
+(Confidence 0.95, Evidence A.)
+
+\section{Cross-Domain Bridges}
+
+\subsection{Physics / information theory / thermodynamics}
+
+CT is a bookkeeping device on top of three pillars:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item Logical irreversibility implies minimal dissipation $\kT$ per erased bit \cite{Landauer1961,Bennett1982}.
+\item Fluctuation theorems connect excess work to KL divergences over realizations \cite{Jarzynski1997,Crooks1999,Seifert2012}.
+\item Coding theory bounds the cost of targeting rare patterns.
+\end{enumerate}
+
+The only step beyond prior art is to bind these to explicit misalignments across $W,M,S,G$ and demand consistent accounting.
+
+\subsection{Biology and cognition}
+
+In cells, $Q$ corresponds to regulatory networks; $R$ to expressed behaviour.
+Mis-specified signalling pathways (e.g., incorrect gradients) should dissipate more energy per unit useful work.
+In humans, sustained deception engages control networks and working memory; CT₂ predicts additional energetic and temporal cost for matched tasks.
+
+\subsection{Computation and AI}
+
+In machine learning systems:
+$P$ is the task distribution,
+$Q$ model parameters and internal activations,
+$R$ outputs and external APIs.
+
+CT suggests:
+
+\begin{itemize}[leftmargin=1.5em]
+\item For fixed architecture and accuracy, enforcing contradictions (e.g., maintaining a false persona) increases compute, latency, or erasure events.
+\item Training objectives that penalize unnecessary divergence between internal beliefs and external messages can reduce CT and, in some regimes, improve efficiency.
+\end{itemize}
+
+\subsection{Organizations and engineered systems}
+
+Organizations can be modelled with:
+$P$ actual operating environment,
+$Q$ internal dashboards and beliefs,
+$R$ public communication and policies,
+$G$ stated vs implicit objectives.
+
+CT frames misalignment---between what is measured, believed, and communicated---as a source of avoidable cost: duplicated work, crises, and regulatory penalties.
+
+\section{Predictions and Tests}
+
+We outline falsifiable predictions with indicative resource estimates.
+Costs are order-of-magnitude and may be refined.
+
+\subsection{Prediction 1: LLM contradiction cost}
+
+\textbf{Claim.}
+For a fixed large language model and prompt distribution, constrained-false responses (forced internal-external misalignment) require higher expected energy or latency than truthful baselines with matched length and difficulty.
+(Confidence 0.7, Evidence C.)
+
+\textbf{Protocol.}
+\begin{itemize}[leftmargin=1.5em]
+\item Select $N\sim 10^3$ factual prompts with known answers.
+\item For each, generate (i) truthful answers and (ii) constrained-false narratives satisfying user-specified contradictions.
+\item Measure per-sample:
+wall-clock time, accelerator energy (via hardware counters), tokens, and approximate log-likelihood.
+\item Control for output length and sampling temperature.
+\end{itemize}
+
+\textbf{Success.}
+A statistically significant positive difference in energy/latency for constrained-false vs truthful, after controls.
+
+\textbf{Failure.}
+No robust difference; or lower cost for constrained-false without hidden offloading.
+Such a result would challenge CT₂ in this domain.
+
+\subsection{Prediction 2: Human sustained deception overhead}
+
+\textbf{Claim.}
+In matched laboratory tasks, sustained deception produces higher metabolic and response-time cost than truthful reporting.
+(0.8, B.)
+
+\textbf{Protocol.}
+\begin{itemize}[leftmargin=1.5em]
+\item Within-subject design; participants perform fact-reporting tasks under truthful vs instructed-deception conditions.
+\item Match difficulty and reward; measure RT, accuracy, and (if available) fMRI or EEG markers.
+\item Estimate extra joules via standard neurovascular coupling approximations.
+\end{itemize}
+
+\textbf{Success.}
+Consistent positive overhead, beyond generic task difficulty.
+
+\textbf{Failure.}
+No overhead once difficulty is controlled, or cheaper deception; would limit CT₂'s applicability to cognition.
+
+\subsection{Prediction 3: Microbial conflicting cues}
+
+\textbf{Claim.}
+Microbes exposed to systematically conflicting chemoattractant/repellent cues incur higher ATP consumption per unit growth than coherent controls.
+(0.6, C.)
+
+\textbf{Protocol.}
+\begin{itemize}[leftmargin=1.5em]
+\item Microfluidic setup with controlled gradients; compare coherent and conflicting cue patterns.
+\item Measure growth, motility, and ATP or oxygen consumption.
+\end{itemize}
+
+\textbf{Decision.}
+If conflicting conditions show no additional energetic cost per produced biomass, CT$_1$ predictions are weakened for this class.
+
+\subsection{Prediction 4: Organizational coherence index}
+
+\textbf{Claim.}
+Organizations with lower CT-style coherence indices (alignment of policies, internal metrics, and external messaging) exhibit better efficiency and lower incident rates.
+(0.5, D.)
+
+\textbf{Protocol.}
+Panel dataset across organizations; construct coherence metrics from documents and outcomes; perform regression controlling for size and sector.
+
+\section{Experiments and Simulations}
+
+\subsection{Toy POMDP: bias vs CT}
+
+We consider a two-state partially observable Markov decision process with symmetric prior and observations.
+Agents maintain a biased belief parameter $b$.
+CT is estimated as the KL divergence between the optimal posterior and the biased posterior, averaged over time.
+Simulations show a symmetric U-shaped CT(bias) curve with minimum at $b=0$ and rapidly increasing cost as $|b|$ grows.
+(0.8, B.)
+
+\paragraph{Pseudocode.}
+See \texttt{Supplement.tex} for full listing.
+
+\subsection{Agent-based evolutionary simulations}
+
+Agents with varying alignment, honesty, and compartmentalization strategies interact in environments with tunable feedback and stakes.
+Fitness includes task payoff minus CT as estimated from misalignment operations.
+Preliminary sweeps suggest coherent strategies dominate in high-feedback, complex environments, while deceptive strategies can persist when feedback is weak or CT is small.
+
+\section{Applications}
+
+\subsection{AI alignment and monitoring}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{CT-regularized training.}
+Augment loss with proxies for CT, such as penalties for persistent divergence between latent beliefs and outputs, or for unnecessary erasures.
+\item \textbf{Anomaly detection.}
+Monitor power and latency deviations conditional on semantic content as potential indicators of misalignment or hidden internal work.
+\end{itemize}
+
+\subsection{System and protocol design}
+
+Design principles suggested by CT:
+
+\begin{itemize}[leftmargin=1.5em]
+\item prefer reversible or auditably invertible transformations;
+\item minimize duplicated, inconsistent data stores;
+\item make goal structures explicit to avoid hidden $G$-mismatch.
+\end{itemize}
+
+\subsection{Organizational governance}
+
+Define a Consistency Index based on discrepancies among measured practices, internal documents, and external communications.
+Track its correlation with financial and safety performance.
+Use reductions in this index as a design target.
+
+\section{Limitations, Failure Modes, Ethics}
+
+\subsection{Limitations}
+
+\begin{itemize}[leftmargin=1.5em]
+\item CT depends on chosen constraints, cost functionals, and modelling granularity.
+\item Precise erasure accounting in complex systems is difficult.
+\item The CT$_2$ term lacks a fully general proof.
+\item Empirical evidence so far is toy-level and indirect.
+\end{itemize}
+
+\subsection{Failure modes}
+
+\begin{itemize}[leftmargin=1.5em]
+\item CT collapses to existing metrics without adding predictive value.
+\item Misapplication: treating CT as a moral oracle or using partial accounting.
+\item Overfitting: cherry-picking systems where misalignment is obviously costly.
+\end{itemize}
+
+\subsection{Ethical considerations}
+
+CT is descriptive.
+Any normative conclusions require separate ethical reasoning.
+However, tools derived from CT (e.g.\ detecting deceptive AI systems, improving institutional transparency) can support harm reduction when applied carefully.
+
+\section{Future Work}
+
+Key open problems:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Construct general procedures for $P^\*$ in real architectures.
+\item Prove or falsify a tight CT$_2$ bound.
+\item Model CT aggregation across hierarchical systems.
+\item Run decisive experiments in at least one physical and one AI domain.
+\end{enumerate}
+
+\section*{Acknowledgments}
+
+The author thanks collaborators, critics, and readers who pressed for clearer definitions and explicit tests.
+Any remaining errors or overstatements are his responsibility.
+
+\section*{Author's Note}
+
+This work is intended as a compact, precise handoff of the Consistency Tax program.
+It may stand as my final public synthesis on this line for some time.
+The framework is offered as a working hypothesis, not a finished theory:
+every major claim has an attached confidence rating, and the experiments outlined above are designed to let others confirm, refine, or decisively reject it.
+If you find cleaner proofs, sharper counterexamples, or better experiments, you are invited to treat this text as raw material.
+
+\section*{Glossary}
+
+\begin{description}[leftmargin=1.8em]
+\item[CT (Consistency Tax).] Landauer-scaled KL divergence between realized and coherent reference joints.
+\item[$W$.] World or environment states and dynamics.
+\item[$M$.] Internal model or belief states.
+\item[$S$.] Signals, actions, or outputs.
+\item[$G$.] Objectives, preferences, or constraints.
+\item[$P$.] Realized joint distribution over $(W,M,S,G)$.
+\item[$P^\*$.] Coherent reference joint minimizing loss+cost under constraints.
+\item[$\KL(P\Vert Q)$.] Kullback--Leibler divergence.
+\item[$\kT$.] $k_B T \ln 2$, Landauer factor converting bits to energy.
+\end{description}
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,20 @@
+```yaml
+cff-version: 1.2.0
+message: "If you use the Consistency Tax framework in your work, please cite this project."
+title: "Consistency Tax and Epistemic Thermodynamics: The Energetic Cost of Misalignment"
+authors:
+  - family-names: "Đurič"
+    given-names: "Andraž"
+version: "1.0.0"
+date-released: "2025-01-01"
+doi: ""
+license: "CC-BY-4.0"
+preferred-citation:
+  type: article
+  title: "Consistency Tax and Epistemic Thermodynamics: The Energetic Cost of Misalignment"
+  authors:
+    - family-names: "Đurič"
+      given-names: "Andraž"
+  journal: ""
+  year: 2025
+  notes: "Self-published working paper; see MainPaper.tex."
